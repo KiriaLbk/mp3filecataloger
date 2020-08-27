@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+        getDate('http://localhost:3001/sum/');
+        function getDate(URL)
+        {
+            let xhr= new XMLHttpRequest();
+            xhr.open("GET",URL,true);
+	        xhr.send(true);
+            xhr.addEventListener("load", function () 
+            {
+                let resp=JSON.parse(this.response);
+                console.log(resp);
+                getList(resp);
+            });
+        }
+        function getList(resp)
+        {
+            let ullist=document.getElementsByClassName('ul')[0];
+            let li=[];
+            let list=[];
+            let p;
+            let count=0;
+            for (let ind = 0; ind < resp.length; ind++)
+            {
+                for (let index = ind; index < resp.length; index++)
+                {
+                    if(ind==index)
+                    {
+                        continue;
+                    }
+                    if(resp[ind].hash==resp[index].hash)
+                    {
+                        li[count]={};
+                        li[count].one=ind;
+                        li[count].two=index;
+                        count++;
+                    }   
+                }
+            }
+            for(let index=0;index<li.length;index++)
+            {
+                list[index]=document.createElement('li');
+                list[index].innerHTML="Дубликат-"+index;
+                p=document.createElement('p');
+                p.innerHTML+='Путь : '+`${resp[li[index].one].path}` 
+                p.innerHTML+=`<br>`
+                p.innerHTML+='Контрольная сумма : ' +`${resp[li[index].one].hash}`
+                p.innerHTML+=`<br>`
+                p.innerHTML+='Путь : '+`${resp[li[index].two].path}` 
+                p.innerHTML+=`<br>`
+                p.innerHTML+='Контрольная сумма : ' +`${resp[li[index].two].hash}`
+                list[index].appendChild(p);
+                ullist.appendChild(list[index]);
+            }
+        }
+    </script>
+</head>
+<body>
+    <ul class="ul"></ul>
+</body>
+</html>
